@@ -1,0 +1,20 @@
+:root {
+    --primary-color: #007bff;
+    --hover-color: #0056b3;
+    --font-family: 'Roboto', sans-serif;
+    --bg-color: #f0f2f5;
+    --text-color: #333;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}

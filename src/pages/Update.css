@@ -1,0 +1,32 @@
+.update-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  .update-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .update-container label {
+    display: flex;
+    flex-direction: column;
+    color: var(--text-color);
+  }
+  .update-container button {
+    align-self: center;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .update-container button:hover {
+    background-color: var(--hover-color);
+  }
+  

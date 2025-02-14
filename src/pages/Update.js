@@ -1,59 +1,62 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import Loader from '../components/Loader';
+import './Update.css';
 
 const Update = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    price: "",
-  });
+  const [formData, setFormData] = useState({ title: '', description: '', price: '' });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch(`https://fakestoreapi.com/products/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`https://fakestoreapi.com/products/${id}`);
+        if (!res.ok) throw new Error('Failed to fetch product');
+        const data = await res.json();
         setProduct(data);
-        setFormData({
-          title: data.title,
-          description: data.description,
-          price: data.price,
-        });
-      });
+        setFormData({ title: data.title, description: data.description, price: data.price });
+      } catch (error) {
+        toast.error('Failed to fetch product');
+      }
+    };
+    fetchProduct();
   }, [id]);
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    fetch(`https://fakestoreapi.com/products/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => setProduct(data));
+    setLoading(true);
+    try {
+      const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) throw new Error('Failed to update product');
+      const data = await res.json();
+      toast.success('Product updated successfully!');
+      setProduct(data);
+    } catch (error) {
+      toast.error('Update failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (!product) return <div>Loading...</div>;
+  if (!product) return <Loader />;
 
   return (
-    <div>
+    <div className="update-container">
       <h2>Update Product</h2>
       <form onSubmit={handleSubmit}>
         <label>
           Title:
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-          />
+          <input type="text" name="title" value={formData.title} onChange={handleChange} />
         </label>
         <label>
           Description:
@@ -66,14 +69,11 @@ const Update = () => {
         </label>
         <label>
           Price:
-          <input
-            type="number"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-          />
+          <input type="number" name="price" value={formData.price} onChange={handleChange} />
         </label>
-        <button type="submit">Update</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Updating...' : 'Update'}
+        </button>
       </form>
     </div>
   );

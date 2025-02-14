@@ -1,39 +1,43 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import "./ProductList.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import React, { useState, useEffect } from 'react';
+import ProductCard from './ProductCard';
+import Loader from './Loader';
+import './ProductList.css';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data));
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch('https://fakestoreapi.com/products');
+        if (!res.ok) throw new Error('Failed to fetch products');
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
   }, []);
 
-  const handleDelete = (id) => {
-    setProducts(products.filter((product) => product.id !== id));
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
+      setProducts(products.filter((product) => product.id !== id));
+      // Optionally, call API to delete product on the server
+    }
   };
+
+  if (loading) return <Loader />;
+  if (error) return <div className="error">Error: {error}</div>;
 
   return (
     <div className="product-list">
       {products.map((product) => (
-        <div key={product.id} className="product-item">
-          <span>{product.title}</span>
-          <div className="icons">
-            <Link to={`/view/${product.id}`} className="icon">
-              <FontAwesomeIcon icon={faEye} />
-            </Link>
-            <Link to={`/update/${product.id}`} className="icon">
-              <FontAwesomeIcon icon={faEdit} />
-            </Link>
-            <span className="icon" onClick={() => handleDelete(product.id)}>
-              <FontAwesomeIcon icon={faTrash} />
-            </span>
-          </div>
-        </div>
+        <ProductCard key={product.id} product={product} onDelete={handleDelete} />
       ))}
     </div>
   );

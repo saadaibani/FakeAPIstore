@@ -1,0 +1,36 @@
+.product-card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #fff;
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .product-card img {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: contain;
+  }
+  
+  .card-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+  
+  .icon {
+    cursor: pointer;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+  }
+  
+  .icon:hover {
+    color: var(--primary-color);
+  }
+  
